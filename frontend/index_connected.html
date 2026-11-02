@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SignSpeak - Sign Language to Text</title>
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #181818,
+                    #080808 65%
+                );
+
+            color: white;
+
+            min-height: 100vh;
+
+            padding: 15px 30px;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .header {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .logo-section {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .logo {
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #008cff,
+                    #19dca0
+                );
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 24px;
+        }
+
+
+        .logo-section h1 {
+
+            font-size: 24px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .logo-section p {
+
+            color: #888;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+        }
+
+
+        .privacy {
+
+            border: 1px solid #333;
+
+            padding: 8px 14px;
+
+            border-radius: 25px;
+
+            color: #00e89b;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+        }
+
+
+        /* =====================================================
+           HERO
+        ====================================================== */
+
+        .hero {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            margin-bottom: 15px;
+        }
+
+
+        .hero h2 {
+
+            font-size: 36px;
+
+            line-height: 1;
+
+            margin-bottom: 8px;
+        }
+
+
+        .hero h2 span {
+
+            color: #666;
+        }
+
+
+        .hero h2 strong {
+
+            color: #888;
+        }
+
+
+        .hero p {
+
+            color: #aaa;
+
+            max-width: 900px;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+        }
+
+
+        /* =====================================================
+           MAIN WORKSPACE
+        ====================================================== */
+
+        .main-workspace {
+
+            max-width: 1200px;
+
+            margin: 15px auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1.45fr 0.85fr;
+
+            gap: 20px;
+
+            align-items: stretch;
+        }
+
+
+        /* =====================================================
+           CARDS
+        ====================================================== */
+
+        .camera-card,
+        .sentence-card,
+        .prediction-card,
+        .guide-card,
+        .saved-card {
+
+            background: #111;
+
+            border: 1px solid #292929;
+
+            border-radius: 20px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 15px 50px
+                rgba(0,0,0,0.3);
+        }
+
+
+        .main-workspace
+        .camera-card,
+        .main-workspace
+        .sentence-card {
+
+            max-width: none;
+
+            margin: 0;
+        }
+
+
+        .prediction-card,
+        .guide-card,
+        .saved-card {
+
+            max-width: 1200px;
+
+            margin: 30px auto;
+        }
+
+
+        /* =====================================================
+           SECTION TITLES
+        ====================================================== */
+
+        .section-title {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            color: #bdbdbd;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .green-wave {
+
+            color: #00e89b;
+
+            font-size: 20px;
+        }
+
+
+        /* =====================================================
+           CAMERA HEADER
+        ====================================================== */
+
+        .camera-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+
+            color: #aaa;
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+        }
+
+
+        .live-dot {
+
+            display: inline-block;
+
+            width: 8px;
+
+            height: 8px;
+
+            background: #00e89b;
+
+            border-radius: 50%;
+
+            margin-right: 7px;
+
+            box-shadow:
+                0 0 12px #00e89b;
+        }
+
+
+        /* =====================================================
+           START SCREEN
+        ====================================================== */
+
+        .start-screen {
+
+            height: 330px;
+
+            border: 1px solid #252525;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+
+            background:
+
+                linear-gradient(
+                    rgba(255,255,255,0.02) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.02) 1px,
+                    transparent 1px
+                );
+
+            background-size: 50px 50px;
+        }
+
+
+        .camera-icon {
+
+            width: 70px;
+
+            height: 70px;
+
+            border: 1px solid #333;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .start-screen h2 {
+
+            font-size: 27px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .start-screen p {
+
+            color: #888;
+
+            max-width: 500px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ====================================================== */
+
+        button {
+
+            border: none;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+
+        button:hover {
+
+            transform: translateY(-2px);
+        }
+
+
+        button:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+        }
+
+
+        .start-button {
+
+            background: white;
+
+            color: #111;
+
+            padding: 13px 28px;
+
+            border-radius: 35px;
+
+            font-size: 15px;
+        }
+
+
+        .primary-button {
+
+            background: #087ff5;
+
+            color: white;
+
+            padding: 12px 20px;
+
+            border-radius: 30px;
+        }
+
+
+        .secondary-button {
+
+            background: transparent;
+
+            color: #ddd;
+
+            border: 1px solid #333;
+
+            padding: 12px 20px;
+
+            border-radius: 30px;
+        }
+
+
+        .clear-button {
+
+            background: transparent;
+
+            color: #ff4444;
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 30px;
+        }
+
+
+        .button-row {
+
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+        }
+
+
+        /* =====================================================
+           CAMERA
+        ====================================================== */
+
+        .camera-area {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 330px;
+
+            overflow: hidden;
+
+            border-radius: 18px;
+
+            background: black;
+
+            border: 1px solid #333;
+        }
+
+
+        .camera-area video {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+
+        .camera-area canvas {
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            pointer-events: none;
+        }
+
+
+        .camera-status {
+
+            position: absolute;
+
+            left: 15px;
+
+            bottom: 15px;
+
+            padding: 8px 13px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(0,0,0,0.7);
+
+            color: #00e89b;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           SENTENCE BUILDER
+        ====================================================== */
+
+        .sentence-card {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        textarea {
+
+            width: 100%;
+
+            height: 170px;
+
+            resize: none;
+
+            outline: none;
+
+            border: 1px solid #222;
+
+            border-radius: 18px;
+
+            background: #080808;
+
+            color: white;
+
+            padding: 20px;
+
+            font-size: 22px;
+
+            margin-bottom: 15px;
+        }
+
+
+        textarea::placeholder {
+
+            color: #555;
+        }
+
+
+        .sentence-card .button-row {
+
+            margin-top: auto;
+        }
+
+
+        /* =====================================================
+           PREDICTION
+        ====================================================== */
+
+        .prediction-box {
+
+            height: 260px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid #222;
+
+            border-radius: 18px;
+
+            background: #0c0c0c;
+
+            margin-bottom: 25px;
+        }
+
+
+        #prediction {
+
+            color: #777;
+
+            font-size: 28px;
+
+            font-family: monospace;
+
+            text-align: center;
+        }
+
+
+        .confidence-section {
+
+            margin-top: 10px;
+        }
+
+
+        .confidence-title {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #888;
+
+            font-size: 13px;
+
+            margin-bottom: 10px;
+
+            letter-spacing: 2px;
+        }
+
+
+        #confidenceText {
+
+            color: white;
+
+            font-size: 18px;
+        }
+
+
+        .progress-bar {
+
+            height: 12px;
+
+            background: #222;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+
+        .progress {
+
+            height: 100%;
+
+            width: 0%;
+
+            background: #00e89b;
+
+            border-radius: 10px;
+
+            transition: width 0.2s;
+        }
+
+
+        /* =====================================================
+           GESTURE GUIDE
+        ====================================================== */
+
+        .guide-card h3 {
+
+            color: #999;
+
+            font-size: 14px;
+
+            letter-spacing: 3px;
+
+            margin: 25px 0 15px;
+        }
+
+
+        .gesture-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .gesture {
+
+            background: #191919;
+
+            border: 1px solid #292929;
+
+            border-radius: 18px;
+
+            padding: 22px;
+
+            min-height: 100px;
+        }
+
+
+        .gesture h4 {
+
+            color: #00e89b;
+
+            font-size: 20px;
+
+            margin-bottom: 10px;
+
+            font-family: monospace;
+        }
+
+
+        .gesture p {
+
+            color: #888;
+
+            line-height: 1.5;
+        }
+
+
+        .letters-title {
+
+            margin-top: 40px !important;
+        }
+
+
+        /* =====================================================
+           SAVED SESSIONS
+        ====================================================== */
+
+        .saved-session {
+
+            background: #191919;
+
+            border: 1px solid #292929;
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .saved-session h4 {
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .saved-session p {
+
+            color: #777;
+
+            font-family: monospace;
+
+            font-size: 13px;
+        }
+
+
+        .no-saved {
+
+            color: #555;
+
+            text-align: center;
+
+            padding: 30px;
+        }
+
+
+        .hidden {
+
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 900px) {
+
+            body {
+
+                padding: 15px;
+            }
+
+
+            .header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+
+            .privacy {
+
+                font-size: 10px;
+            }
+
+
+            .hero h2 {
+
+                font-size: 32px;
+            }
+
+
+            .hero p {
+
+                font-size: 14px;
+            }
+
+
+            .main-workspace {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .camera-card,
+            .sentence-card,
+            .prediction-card,
+            .guide-card,
+            .saved-card {
+
+                padding: 18px;
+
+                border-radius: 18px;
+            }
+
+
+            .start-screen,
+            .camera-area {
+
+                height: 350px;
+            }
+
+
+            textarea {
+
+                height: 160px;
+
+                font-size: 21px;
+            }
+
+
+            .gesture-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .button-row {
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+
+            .button-row button {
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+
+    <!-- =====================================================
+         MEDIAPIPE LIBRARIES
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            
+        </div>
+
+        <div>
+
+            <h1>
+                SignSpeak
+            </h1>
+
+            <p>
+                REAL-TIME ASL → TEXT
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="privacy">
+
+         AI BACKEND CONNECTED
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     HERO
+====================================================== -->
+
+<section class="hero">
+
+    <h2>
+
+        Sign it.
+        <span>See it.</span>
+        <strong>Speak it.</strong>
+
+    </h2>
+
+
+    <p>
+
+        A simple real-time bridge between hand language
+        and written text — powered by hand tracking
+        directly in your browser.
+
+    </p>
+
+</section>
+
+
+
+<!-- =====================================================
+     CAMERA + SENTENCE WORKSPACE
+====================================================== -->
+
+<div class="main-workspace">
+
+
+    <!-- =================================================
+         CAMERA
+    ================================================== -->
+
+    <section class="camera-card">
+
+
+        <div class="camera-header">
+
+            <div>
+
+                <span class="live-dot"></span>
+
+                LIVE DETECTION
+
+            </div>
+
+
+            <div id="fps">
+
+                0 FPS
+
+            </div>
+
+        </div>
+
+
+
+        <!-- START SCREEN -->
+
+        <div
+            id="startScreen"
+            class="start-screen"
+        >
+
+            <div class="camera-icon">
+
+                📷
+
+            </div>
+
+
+            <h2>
+
+                Camera Ready
+
+            </h2>
+
+
+            <p>
+
+                Enable your webcam to begin real-time
+                sign language recognition.
+                Hand tracking runs in the browser; sign prediction is handled by the Flask AI backend.
+
+            </p>
+
+
+            <button
+                id="startButton"
+                class="start-button"
+            >
+
+                ▶ Start Detection
+
+            </button>
+
+        </div>
+
+
+
+        <!-- CAMERA -->
+
+        <div
+            id="cameraArea"
+            class="camera-area hidden"
+        >
+
+            <video
+                id="video"
+                autoplay
+                playsinline
+            >
+            </video>
+
+
+            <canvas
+                id="canvas"
+            >
+            </canvas>
+
+
+            <div class="camera-status">
+
+                🟢 Camera Active
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         SENTENCE BUILDER
+    ================================================== -->
+
+    <section class="sentence-card">
+
+
+        <div class="section-title">
+
+            <span>
+
+                SENTENCE BUILDER
+
+            </span>
+
+
+            <span id="charCount">
+
+                0 CHARS
+
+            </span>
+
+        </div>
+
+
+
+        <textarea
+            id="sentence"
+            placeholder="Your detected signs will appear here..."
+            readonly
+        >
+        </textarea>
+
+
+
+        <div class="button-row">
+
+
+            <!-- <button
+                id="speakButton"
+                class="primary-button"
+            >
+
+                🔊 Speak
+
+            </button> -->
+
+
+
+            <button
+                id="backspaceButton"
+                class="secondary-button"
+            >
+
+                ⌫ Backspace
+
+            </button>
+
+
+
+            <!-- <button
+                id="saveButton"
+                class="secondary-button"
+            >
+
+                💾 Save
+
+            </button> -->
+
+
+
+            <button
+                id="clearButton"
+                class="clear-button"
+            >
+
+                🗑 Clear
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<!-- =====================================================
+     LIVE PREDICTION
+====================================================== -->
+
+<section class="prediction-card">
+
+
+    <div class="section-title">
+
+        <span>
+
+            <span class="green-wave">
+
+                〽
+
+            </span>
+
+            LIVE PREDICTION
+
+        </span>
+
+
+        <span id="predictionFps">
+
+            0 FPS
+
+        </span>
+
+    </div>
+
+
+
+    <div class="prediction-box">
+
+        <div id="prediction">
+
+            — awaiting gesture —
+
+        </div>
+
+    </div>
+
+
+
+    <div class="confidence-section">
+
+
+        <div class="confidence-title">
+
+            <span>
+
+                CONFIDENCE
+
+            </span>
+
+
+            <span id="confidenceText">
+
+                0%
+
+            </span>
+
+        </div>
+
+
+
+        <div class="progress-bar">
+
+            <div
+                id="confidenceBar"
+                class="progress"
+            >
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     GESTURE GUIDE
+====================================================== -->
+
+<section class="guide-card">
+
+
+    <div class="section-title">
+
+        <span>
+
+            📖 GESTURE GUIDE
+
+        </span>
+
+    </div>
+
+
+
+    <!-- <h3>
+
+        WORDS
+
+    </h3> -->
+
+
+
+    <div class="gesture-grid">
+
+
+        <!-- <div class="gesture">
+
+            <h4>
+
+                HELLO
+
+            </h4>
+
+            <p>
+
+                Open palm facing forward
+
+            </p>
+
+        </div> -->
+
+
+
+        <!-- <div class="gesture">
+
+            <h4>
+
+                YES
+
+            </h4>
+
+            <p>
+
+                Thumbs up
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                NO
+
+            </h4>
+
+            <p>
+
+                Index and middle fingers pointing forward
+
+            </p>
+
+        </div> -->
+
+
+
+        <!-- <div class="gesture">
+
+            <h4>
+
+                I LOVE YOU
+
+            </h4>
+
+            <p>
+
+                Thumb, index and pinky extended
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                PEACE
+
+            </h4>
+
+            <p>
+
+                Index and middle fingers in a V
+
+            </p>
+
+        </div> -->
+
+
+
+        <!-- <div class="gesture">
+
+            <h4>
+
+                OK
+
+            </h4>
+
+            <p>
+
+                Thumb and index touching, others up
+
+            </p>
+
+        </div> -->
+
+    </div>
+
+
+
+    <h3 class="letters-title">
+
+        LETTERS
+
+    </h3>
+
+
+
+    <div class="gesture-grid">
+
+
+        <div class="gesture">
+
+            <h4>
+
+                A
+
+            </h4>
+
+            <p>
+
+                Closed fist, thumb resting on side
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                B
+
+            </h4>
+
+            <p>
+
+                Four fingers up, thumb across palm
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                C
+
+            </h4>
+
+            <p>
+
+                Curved fingers forming a C shape
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                D
+
+            </h4>
+
+            <p>
+
+                Index finger up, other fingers touching thumb
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                F
+
+            </h4>
+
+            <p>
+
+                Thumb and index pinch, other fingers up
+
+            </p>
+
+        </div>
+
+
+
+        <div class="gesture">
+
+            <h4>
+
+                I
+
+            </h4>
+
+            <p>
+
+                Pinky finger up, other fingers closed
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SAVED SESSIONS
+====================================================== -->
+
+<!-- <section class="saved-card">
+
+
+    <div class="section-title">
+
+        <span>
+
+            🕘 SAVED SESSIONS
+
+        </span>
+
+
+        <span id="savedCount">
+
+            0
+
+        </span>
+
+    </div>
+
+
+
+    <div id="savedSessions">
+
+        <p class="no-saved">
+
+            No saved sessions yet.
+
+        </p>
+
+    </div>
+
+</section> -->
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+/* =====================================================
+   ELEMENTS
+===================================================== */
+const startButton = document.getElementById("startButton");
+const startScreen = document.getElementById("startScreen");
+const cameraArea = document.getElementById("cameraArea");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const sentence = document.getElementById("sentence");
+const prediction = document.getElementById("prediction");
+const confidenceBar = document.getElementById("confidenceBar");
+const confidenceText = document.getElementById("confidenceText");
+const charCount = document.getElementById("charCount");
+const fps = document.getElementById("fps");
+const predictionFps = document.getElementById("predictionFps");
+
+const backspaceButton = document.getElementById("backspaceButton");
+const clearButton = document.getElementById("clearButton");
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+// Maximum backend requests per second.
+// MediaPipe can process many frames, but we do not need
+// to send every single frame to Flask.
+const PREDICTION_INTERVAL = 120;
+
+// How long the same prediction must remain stable
+// before it is typed once.
+const STABLE_TIME = 500;
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+let camera = null;
+let cameraStream = null;
+
+let lastGesture = "";
+let gestureStartTime = 0;
+
+// The last sign that was accepted into the text box.
+// Holding the same sign will NOT type it repeatedly.
+let acceptedGesture = "";
+
+let predictionInProgress = false;
+let lastPredictionRequestTime = 0;
+
+let frameCounter = 0;
+let lastFpsTime = performance.now();
+let currentFPS = 0;
+
+
+/* =====================================================
+   START CAMERA
+===================================================== */
+startButton.addEventListener("click", async function () {
+
+    startButton.disabled = true;
+    startButton.textContent = "Starting...";
+
+    try {
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: 1280,
+                height: 720,
+                facingMode: "user"
+            },
+            audio: false
+        });
+
+        video.srcObject = cameraStream;
+        await video.play();
+
+        startScreen.classList.add("hidden");
+        cameraArea.classList.remove("hidden");
+
+        initializeMediaPipe();
+
+    } catch (error) {
+
+        console.error("Camera error:", error);
+
+        alert(
+            "Camera access was denied or unavailable. Please allow camera permission and try again."
+        );
+
+        startButton.disabled = false;
+        startButton.textContent = "▶ Start Detection";
+    }
+});
+
+
+/* =====================================================
+   MEDIAPIPE
+===================================================== */
+function initializeMediaPipe() {
+
+    const hands = new Hands({
+        locateFile: function (file) {
+            return (
+                "https://cdn.jsdelivr.net/npm/@mediapipe/hands/" +
+                file
+            );
+        }
+    });
+
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.6,
+        minTrackingConfidence: 0.6
+    });
+
+    hands.onResults(onResults);
+
+    camera = new Camera(video, {
+        onFrame: async function () {
+            await hands.send({
+                image: video
+            });
+        },
+        width: 1280,
+        height: 720
+    });
+
+    camera.start();
+}
+
+
+/* =====================================================
+   MEDIAPIPE RESULTS
+===================================================== */
+async function onResults(results) {
+
+    frameCounter++;
+    updateFPS();
+
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    if (
+        results.multiHandLandmarks &&
+        results.multiHandLandmarks.length > 0
+    ) {
+
+        const landmarks =
+            results.multiHandLandmarks[0];
+
+        drawConnectors(
+            ctx,
+            landmarks,
+            HAND_CONNECTIONS,
+            {
+                color: "#00e89b",
+                lineWidth: 3
+            }
+        );
+
+        drawLandmarks(
+            ctx,
+            landmarks,
+            {
+                color: "#087ff5",
+                lineWidth: 1,
+                radius: 4
+            }
+        );
+
+        // Do not send every frame to Flask.
+        const now = performance.now();
+
+        if (
+            !predictionInProgress &&
+            now - lastPredictionRequestTime >= PREDICTION_INTERVAL
+        ) {
+
+            lastPredictionRequestTime = now;
+
+            const result =
+                await predictSign(landmarks);
+
+            if (result) {
+
+                const confidencePercent =
+                    Math.round(result.confidence * 100);
+
+                prediction.textContent =
+                    result.gesture;
+
+                confidenceText.textContent =
+                    confidencePercent + "%";
+
+                confidenceBar.style.width =
+                    confidencePercent + "%";
+
+                handleStableGesture(
+                    result.gesture
+                );
+            }
+        }
+
+    } else {
+
+        prediction.textContent =
+            "— show your hand —";
+
+        confidenceText.textContent = "0%";
+        confidenceBar.style.width = "0%";
+
+        // Reset stability when the hand disappears.
+        lastGesture = "";
+        gestureStartTime = 0;
+    }
+}
+
+
+/* =====================================================
+   FPS
+===================================================== */
+function updateFPS() {
+
+    const now = performance.now();
+    const elapsed = now - lastFpsTime;
+
+    if (elapsed >= 1000) {
+
+        currentFPS =
+            Math.round(
+                frameCounter * 1000 / elapsed
+            );
+
+        fps.textContent =
+            currentFPS + " FPS";
+
+        predictionFps.textContent =
+            currentFPS + " FPS";
+
+        frameCounter = 0;
+        lastFpsTime = now;
+    }
+}
+
+
+/* =====================================================
+   NORMALIZE LANDMARKS
+   Same preprocessing as your Python webcam code.
+===================================================== */
+function normalizeLandmarks(landmarks) {
+
+    if (!landmarks || landmarks.length !== 21) {
+        return null;
+    }
+
+    const coords = landmarks.map(function (lm) {
+        return [lm.x, lm.y, lm.z];
+    });
+
+    // Wrist = landmark 0.
+    const wrist = [
+        coords[0][0],
+        coords[0][1],
+        coords[0][2]
+    ];
+
+    // Move wrist to origin.
+    for (let i = 0; i < coords.length; i++) {
+
+        coords[i][0] -= wrist[0];
+        coords[i][1] -= wrist[1];
+        coords[i][2] -= wrist[2];
+    }
+
+    // Find largest distance from wrist.
+    let scale = 0;
+
+    for (let i = 0; i < coords.length; i++) {
+
+        const x = coords[i][0];
+        const y = coords[i][1];
+        const z = coords[i][2];
+
+        const distance = Math.sqrt(
+            x * x +
+            y * y +
+            z * z
+        );
+
+        if (distance > scale) {
+            scale = distance;
+        }
+    }
+
+    if (scale < 0.000001) {
+        return null;
+    }
+
+    // Scale normalization.
+    for (let i = 0; i < coords.length; i++) {
+
+        coords[i][0] /= scale;
+        coords[i][1] /= scale;
+        coords[i][2] /= scale;
+    }
+
+    // 21 landmarks × 3 = 63 features.
+    return coords.flat();
+}
+
+
+/* =====================================================
+   FRONTEND → FLASK → RANDOM FOREST
+===================================================== */
+async function predictSign(landmarks) {
+
+    const features =
+        normalizeLandmarks(landmarks);
+
+    if (!features) {
+        return null;
+    }
+
+    predictionInProgress = true;
+
+    try {
+
+        const response = await fetch(
+            "/predict",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    landmarks: features
+                })
+            }
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Backend returned HTTP " +
+                response.status
+            );
+        }
+
+        const result =
+            await response.json();
+
+        if (!result.success) {
+
+            console.error(
+                "Backend error:",
+                result.error
+            );
+
+            return null;
+        }
+
+        console.log(
+            "Prediction:",
+            result.prediction,
+            "Confidence:",
+            result.confidence
+        );
+
+        return {
+            gesture: result.prediction,
+            confidence: Number(result.confidence) || 0
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Prediction error:",
+            error
+        );
+
+        prediction.textContent =
+            "Backend connection error";
+
+        confidenceText.textContent = "0%";
+        confidenceBar.style.width = "0%";
+
+        return null;
+
+    } finally {
+
+        predictionInProgress = false;
+    }
+}
+
+
+/* =====================================================
+   STABLE SIGN LOGIC
+===================================================== */
+function handleStableGesture(gesture) {
+
+    if (
+        !gesture ||
+        gesture === "UNKNOWN" ||
+        gesture === "NOTHING"
+    ) {
+        return;
+    }
+
+    const now = Date.now();
+
+    // A new sign starts a new stability period.
+    if (gesture !== lastGesture) {
+
+        lastGesture = gesture;
+        gestureStartTime = now;
+
+        return;
+    }
+
+    // Same prediction must remain stable.
+    if (
+        now - gestureStartTime <
+        STABLE_TIME
+    ) {
+        return;
+    }
+
+    // Do not repeatedly type the same sign
+    // while it is continuously held.
+    if (acceptedGesture === gesture) {
+        return;
+    }
+
+    addGestureToSentence(gesture);
+
+    acceptedGesture = gesture;
+
+    // Keep the sign locked until another sign appears.
+    gestureStartTime = now;
+}
+
+
+/* =====================================================
+   PREDICTION → TEXT
+===================================================== */
+function addGestureToSentence(gesture) {
+
+    // A-Z
+    if (/^[A-Z]$/.test(gesture)) {
+
+        sentence.value += gesture;
+    }
+
+    // SPACE class
+    else if (gesture === "SPACE") {
+
+        sentence.value += " ";
+    }
+
+    // DEL class
+    else if (gesture === "DEL") {
+
+        sentence.value =
+            sentence.value.slice(0, -1);
+    }
+
+    else {
+        return;
+    }
+
+    updateCharacterCount();
+    flashPredictionBox();
+}
+
+
+/* =====================================================
+   VISUAL FEEDBACK
+===================================================== */
+function flashPredictionBox() {
+
+    const box =
+        document.querySelector(".prediction-box");
+
+    if (!box) {
+        return;
+    }
+
+    box.style.transform = "scale(1.02)";
+    box.style.borderColor = "#00e89b";
+
+    setTimeout(function () {
+
+        box.style.transform = "";
+        box.style.borderColor = "";
+
+    }, 180);
+}
+
+
+/* =====================================================
+   CHARACTER COUNT
+===================================================== */
+function updateCharacterCount() {
+
+    charCount.textContent =
+        sentence.value.length + " CHARS";
+}
+
+
+/* =====================================================
+   BACKSPACE
+===================================================== */
+backspaceButton.addEventListener(
+    "click",
+    function () {
+
+        sentence.value =
+            sentence.value.slice(0, -1);
+
+        updateCharacterCount();
+
+        // Allow the currently held sign to be accepted again
+        // after manual backspace.
+        acceptedGesture = "";
+    }
+);
+
+
+/* =====================================================
+   CLEAR
+===================================================== */
+clearButton.addEventListener(
+    "click",
+    function () {
+
+        sentence.value = "";
+
+        updateCharacterCount();
+
+        acceptedGesture = "";
+        lastGesture = "";
+        gestureStartTime = 0;
+    }
+);
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+updateCharacterCount();
+
+
+/* =====================================================
+   CLEANUP
+===================================================== */
+window.addEventListener(
+    "beforeunload",
+    function () {
+
+        if (cameraStream) {
+
+            cameraStream
+                .getTracks()
+                .forEach(function (track) {
+                    track.stop();
+                });
+        }
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+You show sign "A" to webcam
+          ↓
+Camera captures your hand
+          ↓
+MediaPipe finds hand points
+          ↓
+AI model understands the pattern
+          ↓
+Screen shows: A
+
+That is your basic project.
+
+Step 1: Create Python virtual environment
+Run:
+
+python -m venv venv
+
+Then activate it on Windows PowerShell:
+
+.\venv\Scripts\Activate.ps1
+
+If it works, you will see:
+
+(venv) PS C:\...\SignLanguageProject>
+
+
+Step 2: Install required libraries
+pip install opencv-python mediapipe scikit-learn pandas numpy joblib flask
+
+
+Step 3: First test — can Python open your webcam?  test_camera.py in backend
+Before using your dataset or AI, test the webcam.
+
+Python: 3.13.5
+MediaPipe: 1.0.1
+mp.tasks available: True
+
+
+Step 4: Download the Hand Landmarker model
+MediaPipe Hand Landmarker guide and model bundle
+
+step 5 : create test_dataset.py for access img from the dataset
+
+Take all your A/B/C images → detect the hand → extract 63 numbers → save them in a CSV file.
+
+Convert your training images into numbers
+This is what your create_dataset.py is doing.
+
+
+Step 1 — test_camera.py
+Check whether your laptop webcam is working.
+Laptop Camera
+     ↓
+OpenCV
+     ↓
+Show camera
+
+
+Step 2 — test_hand_detection.py
+Check whether MediaPipe can detect your hand.
+Camera/Image
+     ↓
+MediaPipe
+     ↓
+Hand detected?
+
+Step 3 — test_image_landmarks.py
+Check whether MediaPipe can extract landmarks from one image.
+A1.jpg
+   ↓
+MediaPipe
+   ↓
+21 hand landmarks
+
+Step 4 — create_dataset.py
+Take your dataset images and convert them into numbers.
+
+Images
+   ↓
+MediaPipe
+   ↓
+21 landmarks
+   ↓
+63 numbers
+   ↓
+CSV file
+
+It creates:
+training_landmarks.csv
+and:
+test_landmarks.csv
+
+
+Step 5 — train_model.py
+It takes:
+
+training_landmarks.csv
+and teaches Random Forest.
+training_landmarks.csv
+          ↓
+    Random Forest
+          ↓
+     Learn A/B/C
+          ↓
+   sign_model.pkl
+
+   train_model.py teaches the computer how A, B and C hand signs look based on their landmarks.
+
+Step 6 — webcam_prediction.py
+It loads the trained model:
+sign_model.pkl
+
+webcam_prediction.py uses the trained model to recognize the sign in real time from the webcam.
+
+First, create_dataset.py extracts hand landmarks from the dataset and creates a CSV. Then
+train_model.py uses that CSV to train the Random Forest model and saves it as sign_model.pkl.
+Finally, webcam_prediction.py takes live webcam input, extracts the same landmarks, gives them to
+the trained model, and predicts the sign
+
+              DATASET
+                 ↓
+        create_dataset.py
+                 ↓
+       training_landmarks.csv
+                 ↓
+          train_model.py
+                 ↓
+          sign_model.pkl
+                 ↓
+       webcam_prediction.py
+                 ↓
+             WEBCAM
+                 ↓
+            A / B / C
+
+So your project currently uses:
+Model: Random Forest Classifier
+Library: Scikit-learn
+Number of trees: 100
+Input: 63 hand-landmark features
+
+21 hand landmarks
+each has x, y, z
+21 × 3 = 63 features
+
+Output: 29 classes
+
+A B C D E F G H I J K L M
+N O P Q R S T U V W X Y Z
+space
+del
+nothing
+
+And the trained model is saved as:
+sign_model.pkl

@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.idea/
+.vscode/
+.DS_Store
+
+backend/sign_model.pkl
+backend/training_landmarks.csv
+backend/training_landmarks_clean.csv

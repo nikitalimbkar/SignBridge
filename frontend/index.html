@@ -1,0 +1,2756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SignBridge - Sign Language to Text</title>
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+        :root {
+            --teal: #27afb2;
+            --teal-dark: #168f96;
+            --ink: #111827;
+            --muted: #778196;
+            --line: #e4e8ed;
+            --paper: #fff;
+            --soft: #f6f8fa;
+            --pale: #eafafb
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px
+        }
+
+        body {
+            font-family: 'DM Sans', Arial, sans-serif;
+            background: #f8fafb;
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 0
+        }
+
+        button,
+        select,
+        textarea {
+            font: inherit
+        }
+
+        button {
+            border: 0;
+            cursor: pointer;
+            transition: transform .18s, background .18s, border-color .18s
+        }
+
+        button:hover {
+            transform: translateY(-1px)
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed
+        }
+
+        .header {
+            height: 78px;
+            background: rgba(255, 255, 255, .96);
+            border-bottom: 1px solid #edf0f2;
+            box-shadow: 0 2px 8px #1526380b;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            padding: 0 max(24px, calc((100% - 1440px)/2));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 auto
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: #d8f6f6;
+            display: grid;
+            place-items: center;
+            overflow: hidden
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain
+        }
+
+        .brand-text h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            letter-spacing: -.5px
+        }
+
+        .brand-text h1:after {
+            content: "";
+        }
+
+        .brand-text p {
+            display: none
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 38px
+        }
+
+        .nav-links a {
+            color: #354052;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px
+        }
+
+        .nav-links a:hover {
+            color: var(--teal-dark)
+        }
+
+        .header-cta {
+            background: var(--teal);
+            color: white;
+            padding: 13px 25px;
+            border-radius: 10px;
+            font-weight: 700
+        }
+
+        .hero {
+            max-width: 1440px;
+            min-height: 660px;
+            margin: auto;
+            padding: 64px 32px 50px;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            align-items: center;
+            gap: 60px;
+            background: radial-gradient(ellipse at 8% 40%, #e9fbfb 0, transparent 40%), #fff
+        }
+
+        .hero-copy {
+            max-width: 610px
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid #a9e9eb;
+            background: #f0fcfc;
+            color: #087d86;
+            border-radius: 30px;
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 36px
+        }
+
+        .hero-kicker:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #c6eeee
+        }
+
+        .hero h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(48px, 5.1vw, 82px);
+            line-height: 1.03;
+            letter-spacing: -2.6px;
+            margin-bottom: 28px;
+            color: #111827
+        }
+
+        .hero h2 span {
+            display: block;
+            color: var(--teal);
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-weight: 800;
+            letter-spacing: -2px
+        }
+
+        .hero h2 em {
+            font-style: italic;
+            color: #374151
+        }
+
+        .hero p {
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 500px
+        }
+
+        .hero p strong {
+            color: #344054
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 36px
+        }
+
+        .hero-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 22px;
+            background: linear-gradient(110deg, var(--teal-dark), #39c1c1);
+            color: white;
+            padding: 19px 30px;
+            border-radius: 17px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 10px 22px #27afb21c
+        }
+
+        .hero-button:hover {
+            transform: translateY(-2px)
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 46px
+        }
+
+        .hero-stat {
+            border-left: 3px solid var(--teal);
+            padding-left: 14px
+        }
+
+        .hero-stat strong {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--teal);
+            font-size: 27px
+        }
+
+        .hero-stat span {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .hero-visual {
+            position: relative;
+            padding: 30px 0
+        }
+
+        .hero-visual:before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border: 2px dashed #c9f1f2;
+            border-radius: 50%;
+            right: 0;
+            top: 0;
+            z-index: 0
+        }
+
+        .demo-window {
+            position: relative;
+            z-index: 1;
+            min-height: 330px;
+            background: linear-gradient(140deg, #1c293a, #111827);
+            border-radius: 24px;
+            box-shadow: 0 22px 45px #1d29391f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #29394a
+        }
+
+        .demo-live {
+            position: absolute;
+            right: 22px;
+            top: 20px;
+            color: #dbe4ec;
+            font-size: 12px
+        }
+
+        .demo-live:before {
+            content: "";
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            background: #f34b5b;
+            border-radius: 50%;
+            margin-right: 8px
+        }
+
+        .demo-hand {
+            font-size: 92px;
+            filter: grayscale(1);
+            opacity: .8;
+            color: #36b9bc
+        }
+
+        .demo-prediction {
+            position: absolute;
+            left: 0;
+            top: 18px;
+            background: #080d12;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 0 18px 18px 0
+        }
+
+        .demo-prediction strong {
+            font-size: 34px;
+            display: block
+        }
+
+        .demo-prediction span {
+            font-size: 13px;
+            color: #00e58e;
+            font-weight: 700
+        }
+
+        .demo-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #202d3c;
+            padding: 14px 20px;
+            display: flex;
+            gap: 7px
+        }
+
+        .demo-bottom span {
+            border: 1px solid #248c94;
+            background: #173e49;
+            color: #a6f3f1;
+            border-radius: 9px;
+            padding: 8px 11px;
+            font-weight: 700
+        }
+
+        .privacy-pill {
+            position: absolute;
+            z-index: 2;
+            left: -25px;
+            bottom: 65px;
+            padding: 14px 20px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px #11182715;
+            font-size: 13px;
+            color: #475467
+        }
+
+        .privacy-pill strong {
+            display: block;
+            color: #344054;
+            margin-bottom: 4px
+        }
+
+        .privacy-pill span {
+            color: var(--teal-dark)
+        }
+
+        .main-workspace {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 44px 32px 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start
+        }
+
+        .camera-card,
+        .sentence-card,
+        .transcript-card,
+        .prediction-card,
+        .guide-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 3px #1018280b, 0 5px 14px #10182805
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #98a2b3;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            margin-bottom: 16px
+        }
+
+        .green-wave {
+            color: var(--teal);
+            font-size: 20px
+        }
+
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: #667085;
+            font-size: 12px;
+            letter-spacing: 1.3px
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #24b7a8;
+            border-radius: 50%;
+            margin-right: 7px
+        }
+
+        .start-screen {
+            height: 330px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(#f7fbfc, #f3f8fa);
+            padding: 22px
+        }
+
+        .camera-icon {
+            width: 66px;
+            height: 66px;
+            border: 1px solid #d9e5e9;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 30px;
+            margin-bottom: 15px;
+            background: white
+        }
+
+        .start-screen h2 {
+            font-size: 25px;
+            margin-bottom: 10px
+        }
+
+        .start-screen p {
+            color: var(--muted);
+            max-width: 430px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 18px
+        }
+
+        .start-button {
+            background: var(--teal);
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700
+        }
+
+        .secondary-button {
+            background: #fff;
+            color: #475467;
+            border: 1px solid var(--line);
+            padding: 11px 16px;
+            border-radius: 12px
+        }
+
+        .clear-button {
+            background: #fff;
+            color: #ff525b;
+            border: 1px solid #ffd9dc;
+            padding: 11px 16px;
+            border-radius: 12px
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .camera-area {
+            position: relative;
+            width: 100%;
+            height: 330px;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #111827;
+            border: 1px solid var(--line)
+        }
+
+        .camera-area video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .camera-area canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none
+        }
+
+        .camera-status {
+            position: absolute;
+            left: 15px;
+            bottom: 15px;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #000b;
+            color: #d9fbf5;
+            font-size: 12px
+        }
+
+        .prediction-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            background: #080d12e8;
+            color: white;
+            border-radius: 8px
+        }
+
+        #predictedLetter {
+            font-size: 24px;
+            font-weight: bold
+        }
+
+        #confidencePercent {
+            font-size: 12px;
+            font-weight: bold;
+            color: #00ff88
+        }
+
+        .speed-section {
+            margin-top: 15px
+        }
+
+        .speed-title {
+            color: #98a2b3;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px
+        }
+
+        .speed-buttons {
+            display: flex;
+            gap: 8px
+        }
+
+        .speed-button {
+            flex: 1;
+            background: #fff;
+            color: #667085;
+            border: 1px solid var(--line);
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .speed-button:hover {
+            border-color: var(--teal);
+            color: var(--teal-dark)
+        }
+
+        .speed-button.active {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: #fff;
+            box-shadow: none
+        }
+
+        .language-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px
+        }
+
+        .language-select {
+            flex: 1;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            color: #667085
+        }
+
+        .sentence-card {
+            display: flex;
+            flex-direction: column
+        }
+
+        .sentence-card textarea {
+            width: 100%;
+            height: 105px;
+            resize: vertical;
+            outline: none;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fff;
+            color: var(--ink);
+            padding: 15px;
+            font-size: 18px;
+            margin-bottom: 12px
+        }
+
+        .sentence-card textarea::placeholder {
+            color: #98a2b3
+        }
+
+        .transcript-card {
+            padding: 20px
+        }
+
+        .transcript-box {
+            width: 100%;
+            min-height: 150px;
+            max-height: 250px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fff;
+            color: #344054;
+            padding: 14px;
+            font-size: 15px;
+            line-height: 1.6;
+            overflow-y: auto;
+            overflow-wrap: anywhere
+        }
+
+        .transcript-placeholder {
+            color: #98a2b3
+        }
+
+        .transcript-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .transcript-actions button:first-child {
+            flex: 1
+        }
+
+        .prediction-card,
+        .guide-card {
+            max-width: 1376px;
+            margin: 24px auto;
+            padding: 24px
+        }
+
+        .prediction-box {
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #f8fafc;
+            margin-bottom: 20px
+        }
+
+        #prediction {
+            color: #475467;
+            font-size: 28px;
+            font-family: monospace;
+            text-align: center
+        }
+
+        .confidence-section {
+            margin-top: 10px
+        }
+
+        .confidence-title {
+            display: flex;
+            justify-content: space-between;
+            color: #98a2b3;
+            font-size: 13px;
+            margin-bottom: 10px;
+            letter-spacing: 1px
+        }
+
+        #confidenceText {
+            color: #344054;
+            font-size: 16px
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e9eef2;
+            border-radius: 10px;
+            overflow: hidden
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: var(--teal);
+            border-radius: 10px;
+            transition: width .2s
+        }
+
+        .guide-button {
+            background: #fff;
+            color: #475467;
+            border: 1px solid var(--line);
+            padding: 9px 16px;
+            border-radius: 12px;
+            font-size: 12px
+        }
+
+        .guide-button:hover {
+            border-color: var(--teal);
+            color: var(--teal-dark)
+        }
+
+        .gesture-guide-content {
+            margin-top: 10px;
+            animation: guideOpen .3s ease
+        }
+
+        @keyframes guideOpen {
+            from {
+                opacity: 0;
+                transform: translateY(-8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .guide-card h3 {
+            color: #667085;
+            font-size: 13px;
+            letter-spacing: 2px;
+            margin: 22px 0 14px
+        }
+
+        .gesture-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px
+        }
+
+        .gesture {
+            background: #f8fafb;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 18px;
+            min-height: 95px
+        }
+
+        .gesture h4 {
+            color: var(--teal-dark);
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-family: monospace
+        }
+
+        .gesture p {
+            color: #667085;
+            line-height: 1.5;
+            font-size: 14px
+        }
+
+        .letters-title {
+            margin-top: 20px !important
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .features-section,
+        .how-section {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 70px 32px 80px
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px
+        }
+
+        .eyebrow {
+            color: var(--teal-dark);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 15px
+        }
+
+        .section-heading h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(32px, 4vw, 48px);
+            line-height: 1.15
+        }
+
+        .feature-grid,
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px
+        }
+
+        .feature-card,
+        .step-card {
+            background: #fff;
+            border: 1px solid #edf0f2;
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 3px 6px #10182808
+        }
+
+        .feature-icon,
+        .step-number {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            background: var(--teal);
+            color: white;
+            border-radius: 16px;
+            font-size: 23px;
+            font-weight: 800;
+            margin-bottom: 22px
+        }
+
+        .feature-card h3,
+        .step-card h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            margin-bottom: 12px
+        }
+
+        .feature-card p,
+        .step-card p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #667085
+        }
+
+        .steps-grid {
+            grid-template-columns: repeat(4, 1fr)
+        }
+
+        .step-number {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px
+        }
+
+        .how-cta {
+            text-align: center;
+            margin-top: 38px
+        }
+
+        .how-cta a {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(110deg, var(--teal-dark), #39c1c1);
+            color: white;
+            padding: 17px 28px;
+            border-radius: 15px;
+            font-weight: 700
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 18px
+        }
+
+        .stat-card {
+            text-align: center;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 2px 4px #1018280a
+        }
+
+        .stat-card strong {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 27px
+        }
+
+        .stat-card span {
+            color: #98a2b3;
+            font-size: 13px
+        }
+
+        footer {
+            text-align: center;
+            color: #98a2b3;
+            padding: 30px 20px;
+            border-top: 1px solid #edf0f2;
+            font-size: 13px
+        }
+
+        @media(max-width:1000px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding-top: 45px
+            }
+
+            .hero-visual {
+                max-width: 720px;
+                width: 100%;
+                margin: auto
+            }
+
+            .main-workspace {
+                grid-template-columns: 1fr
+            }
+
+            .feature-grid,
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .privacy-pill {
+                left: 8px
+            }
+
+            .header {
+                padding: 0 22px
+            }
+        }
+
+        @media(max-width:620px) {
+            .header {
+                height: auto;
+                min-height: 70px;
+                gap: 12px;
+                flex-wrap: wrap;
+                padding: 12px 16px
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                gap: 25px;
+                padding: 6px
+            }
+
+            .nav-links a {
+                font-size: 13px
+            }
+
+            .header-cta {
+                padding: 10px 14px;
+                font-size: 13px
+            }
+
+            .brand-text h1 {
+                font-size: 21px
+            }
+
+            .hero {
+                padding: 42px 20px;
+                min-height: 0
+            }
+
+            .hero-kicker {
+                margin-bottom: 25px
+            }
+
+            .hero h2 {
+                font-size: 48px;
+                letter-spacing: -1.5px
+            }
+
+            .hero p {
+                font-size: 16px
+            }
+
+            .hero-stats {
+                gap: 18px
+            }
+
+            .hero-stat strong {
+                font-size: 23px
+            }
+
+            .demo-window {
+                min-height: 260px
+            }
+
+            .demo-hand {
+                font-size: 70px
+            }
+
+            .main-workspace,
+            .features-section,
+            .how-section {
+                padding: 28px 16px
+            }
+
+            .camera-card,
+            .sentence-card,
+            .transcript-card,
+            .prediction-card,
+            .guide-card {
+                padding: 15px;
+                border-radius: 16px
+            }
+
+            .start-screen,
+            .camera-area {
+                height: 290px
+            }
+
+            .feature-grid,
+            .steps-grid,
+            .gesture-grid {
+                grid-template-columns: 1fr
+            }
+
+            .feature-card,
+            .step-card {
+                padding: 22px
+            }
+
+            .speed-buttons {
+                gap: 5px
+            }
+
+            .speed-button {
+                padding: 10px 6px;
+                font-size: 12px
+            }
+
+            .button-row button {
+                flex: 1
+            }
+
+            .stats-row {
+                gap: 8px
+            }
+
+            .stat-card {
+                padding: 13px 6px
+            }
+
+            .stat-card strong {
+                font-size: 22px
+            }
+
+            .transcript-actions {
+                flex-wrap: wrap
+            }
+
+            .features-section,
+            .how-section {
+                padding-top: 50px;
+                padding-bottom: 55px
+            }
+        }
+    </style>
+
+
+    <!-- =====================================================
+         MEDIAPIPE LIBRARIES
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+     HEADER
+====================================================== -->
+
+
+    <header class="header">
+        <a class="logo-section" href="#home" aria-label="SignBridge home">
+            <div class="logo"><img src="/frontend/signbridge-logo.png.png" alt="SignBridge logo"></div>
+            <div class="brand-text">
+                <h1>Sign<span style="color:var(--teal)">Bridge</span></h1>
+                <p>REAL-TIME ASL → TEXT</p>
+            </div>
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+        </nav>
+        <button class="header-cta" type="button"
+            onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})">Start Signing</button>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-copy">
+            <!-- <div class="hero-kicker">No account required — free to use</div> -->
+            <h2>When Hands <span>Speak,</span> Everyone <em>Listens.</em></h2>
+            <p>Real-time sign language gesture recognition, right in your browser. <strong>Sign with your hands.
+                    Communicate with text.</strong></p>
+            <div class="hero-actions">
+                <a class="hero-button" href="#workspace">Start Signing <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><strong>26</strong><span>Letters</span></div>
+                <div class="hero-stat"><strong>Live</strong><span>Detection</span></div>
+                <div class="hero-stat"><strong>Free</strong><span>To use</span></div>
+            </div>
+        </div>
+        <div class="hero-visual" aria-label="Sign language prediction preview">
+            <div class="demo-window">
+                <div class="demo-live">LIVE</div>
+                <div class="demo-prediction"><strong>H</strong><span>94%</span></div>
+                <div class="demo-hand" aria-hidden="true">✋</div>
+                <div class="demo-bottom">
+                    <span>H</span><span>E</span><span>L</span><span>L</span><span>O</span><span>_</span></div>
+            </div>
+            <!-- <div class="privacy-pill"><strong>✋ On-device-style workflow</strong><span>Camera predictions shown
+                    live</span></div> -->
+        </div>
+    </section>
+
+    <!-- =====================================================
+     MAIN WORKSPACE
+====================================================== -->
+
+    <div class="main-workspace" id="workspace">
+
+
+        <!-- =================================================
+         CAMERA
+    ================================================== -->
+
+        <section class="camera-card">
+
+
+            <div class="camera-header">
+
+                <div>
+
+                    <span class="live-dot"></span>
+
+                    LIVE DETECTION
+
+                </div>
+
+
+                <div id="fps">
+
+                    0 FPS
+
+                </div>
+
+            </div>
+
+
+            <!-- START SCREEN -->
+
+            <div id="startScreen" class="start-screen">
+
+                <div class="camera-icon">
+
+                    📷
+
+                </div>
+
+
+                <h2>
+
+                    Camera Ready
+
+                </h2>
+
+
+                <p>
+
+                    Enable your webcam to begin
+                    real-time sign language recognition.
+                    All processing happens in your browser.
+
+                </p>
+
+
+                <button id="startButton" class="start-button">
+
+                    ▶ Start Detection
+
+                </button>
+
+            </div>
+
+
+            <!-- CAMERA -->
+
+            <div id="cameraArea" class="camera-area hidden">
+                <div id="predictionBadge" class="prediction-badge">
+                    <span id="predictedLetter">--</span>
+                    <span id="confidencePercent">0%</span>
+                </div>
+                <video id="video" autoplay playsinline></video>
+
+
+                <canvas id="canvas"></canvas>
+
+
+                <div class="camera-status">
+
+                    🟢 Camera Active
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             SPEED BUTTONS
+        ================================================== -->
+
+            <div class="speed-section">
+
+                <div class="speed-title">
+
+                    GESTURE DETECTION SPEED
+
+                </div>
+
+
+                <div class="speed-buttons">
+                    <button id="slowButton" class="speed-button"> Slow</button>
+                    <!-- <button id="normalButton" class="speed-button active"> Normal</button> -->
+                    <button id="fastButton" class="speed-button"> Fast</button>
+                </div>
+                <div class="language-row">
+                    <span aria-hidden="true">🇺🇸</span>
+                    <select id="languageSelect" class="language-select" aria-label="Sign language model">
+                        <option value="ASL">ASL — American Sign Language</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+         RIGHT COLUMN
+    ================================================== -->
+
+        <div class="right-column">
+
+
+            <!-- =================================================
+             SENTENCE BUILDER
+        ================================================== -->
+
+            <section class="sentence-card">
+
+
+                <div class="section-title">
+
+                    <span>
+
+                        SENTENCE BUILDER
+
+                    </span>
+
+
+                    <span id="charCount">
+
+                        0 CHARS
+
+                    </span>
+
+                </div>
+
+
+                <textarea id="sentence" placeholder="Your detected signs will appear here..." readonly></textarea>
+
+
+                <div class="button-row">
+
+
+                    <button id="backspaceButton" class="secondary-button">
+
+                        ⌫ Backspace
+
+                    </button>
+                    <button id="addSpaceButton" class="secondary-button">
+                        + Add Space
+                    </button>
+
+                    <button id="clearButton" class="clear-button">
+
+                        🗑 Clear
+
+                    </button>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+             TRANSCRIPT
+        ================================================== -->
+
+            <section class="transcript-card">
+
+
+                <div class="section-title">
+
+                    <span>
+
+                        📝 TRANSCRIPT
+
+                    </span>
+
+
+                    <span id="transcriptStatus">
+
+                        LIVE
+
+                    </span>
+
+                </div>
+
+
+                <div id="transcriptBox" class="transcript-box">
+
+                    <span class="transcript-placeholder">
+
+                        Your complete transcript
+                        will appear here...
+
+                    </span>
+
+                </div>
+                <div class="transcript-actions">
+                    <button id="copyTextButton" class="secondary-button" type="button">▢ Copy text</button>
+                    <button id="clearTranscriptButton" class="clear-button" type="button">Clear transcript</button>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card"><strong id="wordCount">0</strong><span>Words</span></div>
+                    <div class="stat-card"><strong id="letterCount">0</strong><span>Letters</span></div>
+                    <div class="stat-card"><strong id="statConfidence">—</strong><span>Confidence</span></div>
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+     LIVE PREDICTION
+====================================================== -->
+
+    <section class="prediction-card">
+
+
+        <div class="section-title">
+
+
+            <span>
+
+                <span class="green-wave">
+
+                    〽
+
+                </span>
+
+                LIVE PREDICTION
+
+            </span>
+
+
+            <span id="predictionFps">
+
+                0 FPS
+
+            </span>
+
+        </div>
+
+
+        <div class="prediction-box">
+
+
+            <div id="prediction">
+
+                — awaiting gesture —
+
+            </div>
+
+        </div>
+
+
+        <!-- <div class="confidence-section">
+            <div class="confidence-title"><span>CONFIDENCE</span><span id="confidenceText">0%</span></div>
+            <div class="progress-bar">
+                <div id="confidenceBar" class="progress"></div>
+            </div>
+        </div> -->
+
+    </section>
+
+
+    <!-- =====================================================
+     GESTURE GUIDE
+====================================================== -->
+
+    <section class="guide-card">
+
+
+        <div class="section-title">
+
+
+            <span>
+
+                📖 GESTURE GUIDE
+
+            </span>
+
+
+            <button id="gestureGuideButton" class="guide-button">
+
+                Show Gesture Guide
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+         HIDDEN GESTURE GUIDE CONTENT
+    ================================================== -->
+
+        <div id="gestureGuideContent" class="gesture-guide-content hidden">
+
+
+            <h3 class="letters-title">
+
+                LETTERS
+
+            </h3>
+
+
+            <div class="gesture-grid">
+
+
+                <!-- A -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        A
+
+                    </h4>
+
+
+                    <p>
+
+                        Closed fist,
+                        thumb resting on side
+
+                    </p>
+
+                </div>
+
+
+                <!-- B -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        B
+
+                    </h4>
+
+
+                    <p>
+
+                        Four fingers up,
+                        thumb across palm
+
+                    </p>
+
+                </div>
+
+
+                <!-- C -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        C
+
+                    </h4>
+
+
+                    <p>
+
+                        Curved fingers
+                        forming a C shape
+
+                    </p>
+
+                </div>
+
+
+                <!-- D -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        D
+
+                    </h4>
+
+
+                    <p>
+
+                        Index finger up,
+                        other fingers touching thumb
+
+                    </p>
+
+                </div>
+
+
+                <!-- F -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        F
+
+                    </h4>
+
+
+                    <p>
+
+                        Thumb and index pinch,
+                        other fingers up
+
+                    </p>
+
+                </div>
+
+
+                <!-- I -->
+
+                <div class="gesture">
+
+                    <h4>
+
+                        I
+
+                    </h4>
+
+
+                    <p>
+
+                        Pinky finger up,
+                        other fingers closed
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="features-section" id="features">
+        <div class="section-heading">
+            <div class="eyebrow">FEATURES</div>
+            <h2>Communication, made more accessible</h2>
+        </div>
+        <div class="feature-grid">
+            <article class="feature-card">
+                <div class="feature-icon">✋</div>
+                <h3>Live Sign Detection</h3>
+                <p>Use your webcam to detect hand landmarks and receive a live sign prediction.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon">Aa</div>
+                <h3>Sign to Text</h3>
+                <p>Build letters into words and keep the current text visible in your transcript.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon">⌫</div>
+                <h3>Easy Editing</h3>
+                <p>Add spaces between words, remove the last letter, copy your transcript, or clear it.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Adjustable Speed</h3>
+                <p>Choose slow or fast detection timing to suit your signing pace.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+        <div class="section-heading">
+            <div class="eyebrow">HOW IT WORKS</div>
+            <h2>From hand to text in seconds</h2>
+        </div>
+        <div class="steps-grid">
+            <article class="step-card">
+                <div class="step-number">01</div>
+                <h3>Allow Camera</h3>
+                <p>Press Start Detection and grant webcam permission when your browser asks.</p>
+            </article>
+            <article class="step-card">
+                <div class="step-number">02</div>
+                <h3>Show Your Sign</h3>
+                <p>Hold one hand clearly in front of the camera, with good lighting if possible.</p>
+            </article>
+            <article class="step-card">
+                <div class="step-number">03</div>
+                <h3>Confirm a Letter</h3>
+                <p>Keep the hand sign steady until the selected detection timing accepts it.</p>
+            </article>
+            <article class="step-card">
+                <div class="step-number">04</div>
+                <h3>Build Words</h3>
+                <p>Letters appear in the word builder. Add a space to save a word to the transcript.</p>
+            </article>
+        </div>
+        <div class="how-cta"><a href="#workspace">Try it now — start signing →</a></div>
+    </section>
+    <footer>SignBridge · Real-time sign language to text · Built for web accessibility</footer>
+
+    <!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+    <script>
+
+
+        /* =====================================================
+           GET HTML ELEMENTS
+        ===================================================== */
+
+        const startButton =
+            document.getElementById("startButton");
+
+
+        const startScreen =
+            document.getElementById("startScreen");
+
+
+        const cameraArea =
+            document.getElementById("cameraArea");
+
+
+        const video =
+            document.getElementById("video");
+
+
+        const canvas =
+            document.getElementById("canvas");
+
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        const sentence =
+            document.getElementById("sentence");
+
+
+        const prediction =
+            document.getElementById("prediction");
+
+
+        const confidenceBar =
+            document.getElementById("confidenceBar");
+
+
+        const confidenceText =
+            document.getElementById("confidenceText");
+
+
+        const charCount =
+            document.getElementById("charCount");
+
+
+        const fps =
+            document.getElementById("fps");
+
+
+        const predictionFps =
+            document.getElementById("predictionFps");
+
+
+        const backspaceButton =
+            document.getElementById("backspaceButton");
+
+
+        const clearButton =
+            document.getElementById("clearButton");
+
+        const addSpaceButton =
+            document.getElementById("addSpaceButton");
+
+        const slowButton =
+            document.getElementById("slowButton");
+
+
+        const fastButton =
+            document.getElementById("fastButton");
+        const normalButton =
+            document.getElementById("normalButton");
+
+
+        const transcriptBox =
+            document.getElementById("transcriptBox");
+
+
+        const gestureGuideButton =
+            document.getElementById(
+                "gestureGuideButton"
+            );
+
+
+        const gestureGuideContent =
+            document.getElementById(
+                "gestureGuideContent"
+            );
+
+        const predictedLetter =
+            document.getElementById("predictedLetter");
+
+        const confidencePercent =
+            document.getElementById("confidencePercent");
+
+        function updateConfidenceBadge(gesture, confidence) {
+            predictedLetter.textContent = gesture;
+            confidencePercent.textContent =
+                Number(confidence).toFixed(0) + "%";
+            const statConfidence = document.getElementById("statConfidence");
+            if (statConfidence) statConfidence.textContent = Math.round(Number(confidence)) + "%";
+
+            if (confidence >= 90) {
+                confidencePercent.style.color = "#00ff88";
+            } else if (confidence >= 70) {
+                confidencePercent.style.color = "#ffd166";
+            } else {
+                confidencePercent.style.color = "#ff6b6b";
+            }
+        }
+
+        /* =====================================================
+           VARIABLES
+        ===================================================== */
+
+        let camera = null;
+
+        let cameraStream = null;
+
+        let lastGesture = "";
+
+        let gestureStartTime = 0;
+
+        let lastAddedTime = 0;
+
+        let frameCounter = 0;
+
+        let lastFpsTime =
+            performance.now();
+
+        let currentFPS = 0;
+
+        let completedTranscript = "";
+        /* =====================================================
+           GESTURE SPEED SETTINGS
+        ===================================================== */
+
+        /*
+            SLOW:
+            Gesture stays stable for longer.
+        
+            FAST:
+            Gesture is accepted more quickly.
+        */
+
+        let STABLE_TIME = 1200;
+
+        let REPEAT_DELAY = 1800;
+
+
+        
+/* =====================================================
+   SPEED BUTTONS
+===================================================== */
+
+function setDetectionSpeed(mode) {
+    slowButton.classList.toggle("active", mode === "slow");
+    fastButton.classList.toggle("active", mode === "fast");
+
+    if (mode === "slow") {
+        STABLE_TIME = 1200;
+        REPEAT_DELAY = 1800;
+    } else {
+        STABLE_TIME = 350;
+        REPEAT_DELAY = 800;
+    }
+}
+
+slowButton.addEventListener("click", () => {
+    setDetectionSpeed("slow");
+});
+
+fastButton.addEventListener("click", () => {
+    setDetectionSpeed("fast");
+});
+
+// Set Fast or Slow as the initial speed
+setDetectionSpeed("slow");
+
+
+        /* =====================================================
+           GESTURE GUIDE TOGGLE
+        ===================================================== */
+
+        gestureGuideButton.addEventListener(
+            "click",
+            function () {
+
+
+                gestureGuideContent.classList.toggle(
+                    "hidden"
+                );
+
+
+                if (
+                    gestureGuideContent.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+
+                    gestureGuideButton.textContent =
+                        "Show Gesture Guide";
+
+
+                }
+                else {
+
+
+                    gestureGuideButton.textContent =
+                        "Hide Gesture Guide";
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           START CAMERA
+        ===================================================== */
+
+        startButton.addEventListener(
+            "click",
+            async function () {
+
+
+                startButton.disabled =
+                    true;
+
+
+                startButton.textContent =
+                    "Starting...";
+
+
+                try {
+
+
+                    cameraStream =
+                        await navigator.mediaDevices
+                            .getUserMedia({
+
+                                video: {
+
+                                    width: 1280,
+
+                                    height: 720,
+
+                                    facingMode: "user"
+
+                                },
+
+                                audio: false
+
+                            });
+
+
+                    video.srcObject =
+                        cameraStream;
+
+
+                    await video.play();
+
+
+                    startScreen.classList.add(
+                        "hidden"
+                    );
+
+
+                    cameraArea.classList.remove(
+                        "hidden"
+                    );
+
+
+                    initializeMediaPipe();
+
+
+                }
+                catch (error) {
+
+
+                    console.error(
+                        error
+                    );
+
+
+                    alert(
+                        "Camera access was denied or unavailable. Please allow camera permission and try again."
+                    );
+
+
+                    startButton.disabled =
+                        false;
+
+
+                    startButton.textContent =
+                        "▶ Start Detection";
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INITIALIZE MEDIAPIPE
+        ===================================================== */
+
+        function initializeMediaPipe() {
+
+
+            const hands =
+                new Hands({
+
+                    locateFile:
+                        function (file) {
+
+                            return (
+                                "https://cdn.jsdelivr.net/npm/@mediapipe/hands/"
+                                + file
+                            );
+
+                        }
+
+                });
+
+
+            hands.setOptions({
+
+                maxNumHands: 1,
+
+                modelComplexity: 1,
+
+                minDetectionConfidence: 0.6,
+
+                minTrackingConfidence: 0.6
+
+            });
+
+
+            hands.onResults(
+                onResults
+            );
+
+
+            camera =
+                new Camera(
+                    video,
+                    {
+
+                        onFrame:
+                            async function () {
+
+
+                                await hands.send({
+
+                                    image:
+                                        video
+
+                                });
+
+                            },
+
+
+                        width: 1280,
+
+                        height: 720
+
+                    }
+                );
+
+
+            camera.start();
+
+        }
+
+
+        /* =====================================================
+           MEDIAPIPE RESULTS
+        ===================================================== */
+
+        async function onResults(
+            results
+        ) {
+
+
+            frameCounter++;
+
+
+            updateFPS();
+
+
+            canvas.width =
+                video.videoWidth ||
+                1280;
+
+
+            canvas.height =
+                video.videoHeight ||
+                720;
+
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            if (
+
+                results.multiHandLandmarks &&
+
+                results.multiHandLandmarks.length > 0
+
+            ) {
+
+
+                const landmarks =
+                    results.multiHandLandmarks[0];
+
+
+                /* DRAW CONNECTIONS */
+
+                drawConnectors(
+
+                    ctx,
+
+                    landmarks,
+
+                    HAND_CONNECTIONS,
+
+                    {
+
+                        color:
+                            "#00e89b",
+
+                        lineWidth:
+                            3
+
+                    }
+
+                );
+
+
+                /* DRAW LANDMARKS */
+
+                drawLandmarks(
+
+                    ctx,
+
+                    landmarks,
+
+                    {
+
+                        color:
+                            "#087ff5",
+
+                        lineWidth:
+                            1,
+
+                        radius:
+                            4
+
+                    }
+
+                );
+
+
+                /* PREDICT SIGN */
+
+                const result =
+                    await predictSign(
+                        landmarks
+                    );
+
+
+                prediction.textContent =
+                    result.gesture;
+
+
+                if (confidenceText) {
+    confidenceText.textContent =
+        Math.round(result.confidence) + "%";
+}
+
+if (confidenceBar) {
+    confidenceBar.style.width =
+        result.confidence + "%";
+}
+
+
+                /* HANDLE GESTURE */
+
+                handleStableGesture(
+                    result.gesture
+                );
+
+
+            }
+           
+else {
+    prediction.textContent = "— show your hand —";
+
+    if (confidenceText) {
+        confidenceText.textContent = "0%";
+    }
+
+    if (confidenceBar) {
+        confidenceBar.style.width = "0%";
+    }
+
+    lastGesture = "";
+    gestureStartTime = 0;
+
+    if (predictedLetter) {
+        predictedLetter.textContent = "--";
+    }
+
+    if (confidencePercent) {
+        confidencePercent.textContent = "0%";
+    }
+}
+
+
+        }
+
+
+        /* =====================================================
+           FPS
+        ===================================================== */
+
+        function updateFPS() {
+
+
+            const now =
+                performance.now();
+
+
+            const elapsed =
+                now -
+                lastFpsTime;
+
+
+            if (
+                elapsed >= 1000
+            ) {
+
+
+                currentFPS =
+                    Math.round(
+
+                        frameCounter *
+                        1000 /
+                        elapsed
+
+                    );
+
+
+                fps.textContent =
+                    currentFPS + " FPS";
+
+
+                predictionFps.textContent =
+                    currentFPS + " FPS";
+
+
+                frameCounter =
+                    0;
+
+
+                lastFpsTime =
+                    now;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           PREDICT SIGN
+        ===================================================== */
+
+        async function predictSign(
+            landmarks
+        ) {
+
+
+            const features = [];
+
+
+            /* Extract X, Y, Z */
+
+            for (
+                const landmark of landmarks
+            ) {
+
+
+                features.push(
+                    landmark.x
+                );
+
+
+                features.push(
+                    landmark.y
+                );
+
+
+                features.push(
+                    landmark.z
+                );
+
+            }
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/predict",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    landmarks:
+                                        features
+
+                                })
+
+                        }
+                    );
+
+                const data = await response.json();
+
+                if (data.success) {
+                    updateConfidenceBadge(
+                        data.prediction,
+                        data.confidence
+                    );
+
+                    return {
+                        gesture: data.prediction,
+                        confidence: data.confidence
+                    };
+                }
+
+                return {
+                    gesture: "UNKNOWN",
+                    confidence: 0
+                };
+
+
+
+            }
+            catch (error) {
+
+
+                console.error(
+
+                    "Prediction error:",
+                    error
+
+                );
+
+
+                return {
+
+                    gesture:
+                        "UNKNOWN",
+
+                    confidence:
+                        0
+
+                };
+
+            }
+
+        }
+
+
+        /* =====================================================
+           STABLE GESTURE
+        ===================================================== */
+
+        function handleStableGesture(
+            gesture
+        ) {
+
+
+            if (
+                gesture === "UNKNOWN"
+            ) {
+
+
+                lastGesture =
+                    "";
+
+
+                gestureStartTime =
+                    0;
+
+
+                return;
+
+            }
+
+
+            const now =
+                Date.now();
+
+
+            /* NEW GESTURE */
+
+            if (
+                gesture !== lastGesture
+            ) {
+
+
+                lastGesture =
+                    gesture;
+
+
+                gestureStartTime =
+                    now;
+
+
+                return;
+
+            }
+
+
+            /* STABILITY TIME */
+
+            const stableFor =
+                now -
+                gestureStartTime;
+
+
+            const enoughTime =
+                stableFor >=
+                STABLE_TIME;
+
+
+            /* REPEAT DELAY */
+
+            const enoughRepeatDelay =
+                now -
+                lastAddedTime >=
+                REPEAT_DELAY;
+
+
+            if (
+
+                enoughTime &&
+
+                enoughRepeatDelay
+
+            ) {
+
+
+                addGestureToSentence(
+                    gesture
+                );
+
+
+                lastAddedTime =
+                    now;
+
+
+                gestureStartTime =
+                    now;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           ADD GESTURE TO SENTENCE
+        ===================================================== */
+
+        function addGestureToSentence(gesture) {
+
+            // Ignore special control labels
+            if (
+                gesture === "SPACE" ||
+                gesture === "NOTHING" ||
+                gesture === "DEL"
+            ) {
+                return;
+            }
+
+            // Append letters without spaces
+            sentence.value += gesture;
+
+            updateCharacterCount();
+            updateTranscript();
+        }
+
+
+        /* =====================================================
+           CHARACTER COUNT
+        ===================================================== */
+
+        function updateCharacterCount() {
+
+
+            const count =
+                sentence.value.length;
+
+
+            charCount.textContent =
+                count + " CHARS";
+
+        }
+
+
+        /* =====================================================
+           TRANSCRIPT
+        ===================================================== */
+
+        function updateTranscript() {
+
+            const currentWord = sentence.value.trim();
+
+            const fullText = (
+                completedTranscript + " " + currentWord
+            ).trim();
+
+            if (!fullText) {
+
+                transcriptBox.innerHTML = `
+            <span class="transcript-placeholder">
+                Your complete transcript
+                will appear here...
+            </span>
+        `;
+                updateTranscriptStats("");
+                return;
+            }
+
+            transcriptBox.textContent = fullText;
+            updateTranscriptStats(fullText);
+        }
+
+        
+function updateTranscriptStats(text) {
+    const cleanText = (text || "").trim();
+
+    const words = cleanText
+        ? cleanText.split(/\s+/).length
+        : 0;
+
+    const letters = cleanText.replace(/\s/g, "").length;
+
+    const wordCount = document.getElementById("wordCount");
+    const letterCount = document.getElementById("letterCount");
+
+    if (wordCount) {
+        wordCount.textContent = words;
+    }
+
+    if (letterCount) {
+        letterCount.textContent = letters;
+    }
+}
+
+
+        /* =====================================================
+           ADD SPACE
+        ===================================================== */
+
+        /* =====================================================
+           ADD SPACE - COMPLETE CURRENT WORD
+        ===================================================== */
+
+        addSpaceButton.addEventListener("click", function () {
+
+            const currentWord = sentence.value.trim();
+
+            // Do nothing if the current word is empty
+            if (!currentWord) {
+                return;
+            }
+
+            // Save the completed word permanently
+            completedTranscript = (
+                completedTranscript + " " + currentWord
+            ).trim();
+
+            // Clear the Sentence Builder for the next word
+            sentence.value = "";
+
+            // Reset gesture timing for the next letter
+            lastGesture = "";
+            gestureStartTime = 0;
+            lastAddedTime = Date.now();
+
+            updateCharacterCount();
+            updateTranscript();
+
+        });
+
+
+        /* =====================================================
+           BACKSPACE
+        ===================================================== */
+
+
+        backspaceButton.addEventListener("click", function () {
+            sentence.value = sentence.value.slice(0, -1);
+
+            lastGesture = "";
+            gestureStartTime = 0;
+
+            updateCharacterCount();
+            updateTranscript();
+        });
+
+
+
+        /* =====================================================
+           CLEAR
+        ===================================================== */
+
+        clearButton.addEventListener("click", function () {
+
+            sentence.value = "";
+            completedTranscript = "";
+
+            lastGesture = "";
+            gestureStartTime = 0;
+            lastAddedTime = Date.now();
+
+            updateCharacterCount();
+            updateTranscript();
+
+        });
+
+
+        /* =====================================================
+           COPY / CLEAR TRANSCRIPT
+        ===================================================== */
+        const copyTextButton = document.getElementById("copyTextButton");
+        const clearTranscriptButton = document.getElementById("clearTranscriptButton");
+
+        if (copyTextButton) {
+            copyTextButton.addEventListener("click", async function () {
+                const text = (transcriptBox.textContent || "").trim();
+                if (!text || transcriptBox.querySelector(".transcript-placeholder")) {
+                    alert("There is no transcript to copy yet.");
+                    return;
+                }
+                try {
+                    await navigator.clipboard.writeText(text);
+                    copyTextButton.textContent = "✓ Copied!";
+                    setTimeout(() => copyTextButton.textContent = "▢ Copy text", 1400);
+                } catch (error) {
+                    const helper = document.createElement("textarea");
+                    helper.value = text;
+                    document.body.appendChild(helper);
+                    helper.select();
+                    document.execCommand("copy");
+                    helper.remove();
+                    copyTextButton.textContent = "✓ Copied!";
+                    setTimeout(() => copyTextButton.textContent = "▢ Copy text", 1400);
+                }
+            });
+        }
+        if (clearTranscriptButton) {
+            clearTranscriptButton.addEventListener("click", function () {
+                completedTranscript = "";
+                sentence.value = "";
+                lastGesture = "";
+                gestureStartTime = 0;
+                lastAddedTime = Date.now();
+                updateCharacterCount();
+                updateTranscript();
+            });
+        }
+
+        /* =====================================================
+           INITIAL LOAD
+        ===================================================== */
+
+        updateCharacterCount();
+
+        updateTranscript();
+        updateTranscriptStats("");
+
+
+        /* =====================================================
+           CLEANUP CAMERA
+        ===================================================== */
+
+        window.addEventListener(
+            "beforeunload",
+            function () {
+
+
+                if (
+                    cameraStream
+                ) {
+
+
+                    cameraStream
+                        .getTracks()
+                        .forEach(
+                            function (
+                                track
+                            ) {
+
+
+                                track.stop();
+
+                            }
+                        );
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
