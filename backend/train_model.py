@@ -14,7 +14,7 @@ from sklearn.metrics import (
 
 CSV_FILE = "training_landmarks_clean.csv"
 
-MODEL_FILE = "sign_model.pkl"
+MODEL_FILE = "sign_model_small.pkl"
 
 # ALL 29 CLASSES
 
@@ -215,7 +215,13 @@ print("Please wait...")
 
 model = RandomForestClassifier(
 
-    n_estimators=300,
+    n_estimators=100,
+
+    max_depth=20,
+
+    min_samples_leaf=2,
+
+    max_leaf_nodes=512,
 
     random_state=42,
 

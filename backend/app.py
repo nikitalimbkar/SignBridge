@@ -21,9 +21,8 @@ def frontend_files(filename):
 # Load your trained model
 MODEL_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "sign_model.pkl"
+    "sign_model_small.pkl"
 )
-
 model = joblib.load(MODEL_PATH)
 
 CONFIDENCE_THRESHOLD = 0.25
